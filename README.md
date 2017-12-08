@@ -10,6 +10,14 @@ Running this function will report back balance in the form of:
 
 For this example the data is in a data frame called `nlsy`.
 
+### Load the functions
+
+Maybe this can be a package someday, but for now this is the easiest way:
+
+```{r}
+source("evalMatchBalance.R")
+```
+
 ### Define which variables are categorical and continuous
 
 (Maybe a future version can do this automatically)
