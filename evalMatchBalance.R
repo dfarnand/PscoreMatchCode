@@ -12,14 +12,18 @@ calcPercentDiff <- function(matchit_obj, treatment, col_names, dta) {
   conf <- get_matches(matchit_obj, dta)[ , col_names]
   wts <- get_matches(matchit_obj, dta)[ , "weight"]
   tot <- sum(wts)
-  
+
+  ## Removing NAs
+  treatment <- na.omit(treatment)
+  conf <- na.omit(conf)
+
   treated_pcts <- apply(conf[treatment,]*wts[treatment],2,sum)/tot
   untreated_pcts <- apply(conf[!treatment,]*wts[!treatment],2,sum)/tot
 
   return(treated_pcts - untreated_pcts)
 }
 
-calcSDRatio <- function(matchit_obj, treatment, col_names, dta) {
+calcSDRatio <- function(matchit_obj, trtname, col_names, dta) {
   ## Takes a `matchit` object and evalutes balance using SD Ratio
   ## - treatment is the name of the column for treatment var
   ## - dta is the data frame that was used in matchit
@@ -27,7 +31,7 @@ calcSDRatio <- function(matchit_obj, treatment, col_names, dta) {
 
   matchit_obj$call$data <- dta # Necessary, but I don't get why
 
-  treatment <- match.data(matchit_obj)[ , treatment] == 1
+  treatment <- match.data(matchit_obj)[ , trtname] == 1
   conf <- match.data(matchit_obj)[ , col_names]
   stdmd <- summary(matchit_obj, standardize=T,
                    addlvariables = dta[,col_names])$sum.matched['Std. Mean Diff.']
